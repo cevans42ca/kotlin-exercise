@@ -58,25 +58,6 @@ interface Hierarchy {
         ) { i -> "${nodeId(i)}:${depth(i)}" }
     }
 
-    /**
-     * Returns the parent ID of the node identified by the hierarchy index.
-     * For the root of the forest, returns -1.
-     * @param index must be non-negative and less than [size]
-     */
-    fun parentId(i: Int): Int {
-        if (i == 0) {
-            return -1
-        }
-
-        val currentDepth = depth(i)
-        for (j in i - 1 downTo 0) {
-            if (depth(j) == currentDepth - 1) {
-                return j
-            }
-        }
-
-        return -1
-    }
 }
 
 /**
