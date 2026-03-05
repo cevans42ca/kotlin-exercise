@@ -88,11 +88,21 @@ fun Hierarchy.filter(nodeIdPredicate: (Int) -> Boolean): Hierarchy {
     val retNodeIds = ArrayList<Int>()
     val retDepths = ArrayList<Int>()
 
+    // Keep track of the last time we saw each depth, mapping depth to the index of the node.
+    val depthMap = HashMap<Int, Int>()
+
+    // We use -1 as a sentinel value to indicate that there is no parent for the root of each tree.
+    depthMap[-1] = -1
+
     for (i in 0 until size) {
-        val parentIdVal = parentId(i)
+        depthMap[depth(i)] = i
+
+        val parentIdVal = depthMap[depth(i) - 1]
+            ?: throw IllegalArgumentException("Parent ID not found for node at depth ${depth(i) - 1}")
+
         // If the parentIdVal is -1, then we're looking at a root node of a tree, where the forest is
         // the parent, so we don't need to check if the parent meets the filter.
-        val checkParent = ( parentIdVal != -1 && meetsFilter[parentId(i)] ) || ( parentIdVal == -1 )
+        val checkParent = ( parentIdVal != -1 && meetsFilter[parentIdVal] ) || ( parentIdVal == -1 )
 
         if (nodeIdPredicate.invoke(nodeId(i)) && checkParent) {
             retNodeIds.add(nodeId(i))
