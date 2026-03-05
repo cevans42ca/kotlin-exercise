@@ -1,6 +1,7 @@
 import kotlin.test.*
 
 class FilterTest {
+
     @Test
     fun testFilterProvidedTest() {
         val unfiltered: Hierarchy = ArrayBasedHierarchy(
@@ -95,6 +96,26 @@ class FilterTest {
             intArrayOf(1, 2, 3, 4),
             intArrayOf(0, 1, 2, 3))
         assertEquals(filteredExpected.formatString(), filteredActual.formatString())
+    }
+
+    @Test
+    fun testFilterIncorrectDepth() {
+        val unfiltered: Hierarchy = ArrayBasedHierarchy(
+            intArrayOf(1, 2),
+            intArrayOf(0, 2)) // Depth jump from 0 to 2
+        assertFailsWith<IllegalArgumentException> {
+            unfiltered.filter { true }
+        }
+    }
+
+    @Test
+    fun testFilterIncorrectStartingDepth() {
+        val unfiltered: Hierarchy = ArrayBasedHierarchy(
+            intArrayOf(1),
+            intArrayOf(1)) // Starts with depth 1
+        assertFailsWith<IllegalArgumentException> {
+            unfiltered.filter { true }
+        }
     }
 
 }
